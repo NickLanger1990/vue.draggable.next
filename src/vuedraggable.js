@@ -122,10 +122,6 @@ const draggableComponent = defineComponent({
     }
 
     const { $attrs, $el, componentStructure } = this;
-    // Prevent selecting text when use drag and drop
-    $el.addEventListener("selectstart", e => {
-      e.preventDefault();
-    });
     componentStructure.updated();
 
     const sortableOptions = createSortableOption({
@@ -236,9 +232,22 @@ const draggableComponent = defineComponent({
     },
 
     onDragStart(evt) {
+      const { $el } = this;
+      $el.addeventlistener("selectstart", e => {
+        console.log("e", e);
+        console.log("draggingelement", $el);
+        e.preventdefault();
+      });
+
       this.context = this.getUnderlyingVm(evt.item);
       evt.item._underlying_vm_ = this.clone(this.context.element);
       draggingElement = evt.item;
+      // Prevent selecting text when use drag and drop
+      draggingElement.addeventlistener("selectstart", e => {
+        console.log("e", e);
+        console.log("draggingelement", draggingElement);
+        e.preventdefault();
+      });
     },
 
     onDragAdd(evt) {
